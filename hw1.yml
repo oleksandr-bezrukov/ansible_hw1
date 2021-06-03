@@ -32,6 +32,12 @@
         src: nginx/fwd.conf
         dest: /etc/nginx/conf.d
       become: yes
+    - name: set web application ip
+      replace:
+        path: /etc/nginx/conf.d/fwd.conf
+        regexp: '^(\s+server_name )nginx_fqdn(;\s*)$'
+        replace: '\1{{web_app_host}}\2'
+#        validate: '/usr/sbin/apache2ctl -f %s -t'
       
     - name: Create a directory for certificates if it does not exist
       file:
