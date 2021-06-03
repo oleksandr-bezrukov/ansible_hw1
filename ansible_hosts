@@ -1,0 +1,8 @@
+
+[ansible_servers]
+ans-nginx ansible_host=18.221.116.221
+ans-app ansible_host=3.142.79.73
+ans-pg ansible_host=3.138.182.99
+
+[all:vars]
+ansible_python_interpreter=/usr/bin/python2.7
