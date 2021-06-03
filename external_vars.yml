@@ -1,2 +1,7 @@
 path2cert: /etc/nginx/certs
 nginx_fqdn: ec2-18-221-116-221.us-east-2.compute.amazonaws.com
+pg_host: 127.0.0.1
+pg_user: puser
+pg_password: pg_password
+web_app_host: 127.127.127.127
+DATA: /data
