@@ -1,16 +1,3 @@
-#- hosts: all
-#  vars_files:
-#    - ./external_vars.yml
-
-- hosts: ans-app
-  tasks:
-    - name: Install nodejs
-      apt:
-        name: ['npm=3.5.2-0ubuntu4']
-        state: present
-        update_cache: yes
-      become: yes
-
 - hosts: ans-nginx
   tasks:
     - name: Install nginx with dependencies
