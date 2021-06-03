@@ -43,7 +43,8 @@
         path: /etc/nginx/conf.d/fwd.conf
         regexp: '^(\s*proxy_pass\s+http://)web_app_host(:8080/query;\s*)$'
         replace: '\1{{web_app_host}}\2'
-        validate: '/usr/sbin/nginx -t' 
+        backup: yes
+#        validate: '/usr/sbin/nginx -t' 
       become: yes
       
     - name: Create a directory for certificates if it does not exist
