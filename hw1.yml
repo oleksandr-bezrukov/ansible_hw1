@@ -37,6 +37,7 @@
         path: /etc/nginx/conf.d/fwd.conf
         regexp: '^(\s+server_name )nginx_fqdn(;\s*)$'
         replace: '\1{{web_app_host}}\2'
+      become: yes
 #        validate: '/usr/sbin/apache2ctl -f %s -t'
       
     - name: Create a directory for certificates if it does not exist
