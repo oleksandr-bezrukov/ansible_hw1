@@ -1,9 +1,5 @@
 - hosts: ans-nginx
   tasks:
-#    - name: ensure nginx is at the latest version
-#      yum: name=nginx state=latest
-#      become: yes
-#    - name: ensure nginx is at the latest version
     - name: Install nginx with dependencies
       apt:
         name: ['nginx=1.14.0-0ubuntu1.9']
@@ -12,29 +8,15 @@
 #      with_items:
 #        - nginx=1.14.0-0ubuntu1.9
       become: yes
-#    - name: install nginx if not installed
-#      become: yes
-#
-#      apt:
-#         name: nginx
-#         state: 1.14.0
-#         update_cache: yes
-#    - name: install nginx if not installed
-#      command:  amazon-linux-extras enable nginx1
-#      become: yes
-#    - name: start nginx
-#      service:
-#          name: nginx
-#          state: started
-#      become: yes
+      
     - name: copy the nginx config file
       copy:
-        src: ./nginx.conf
+        src: nginx/nginx.conf
         dest: /etc/nginx/nginx.conf
       become: yes
     - name: copy the nginx config file
       copy:
-        src: ./upstr.conf
+        src: nginx/fwd.conf
         dest: /etc/nginx/conf.d
       become: yes
     - name: Create a directory if it does not exist
@@ -51,9 +33,26 @@
         src: ./index.html
         dest: /var/www/html
       become: yes
-    - name: restart nginx
-      service:
+      
+    - name: Check NGINX configs
+      shell: "/usr/sbin/nginx -t"
+      register: nginx_config_status
+    - name: NGINX test status
+      debug:
+        msg: "{{ nginx_config_status }}"
+    - name: NGINX test status
+      debug:
+        msg: "{{ nginx_config_status.rc }}"
+    - name: Service NGINX restart and enable on boot
+      systemd:
         name: nginx
         state: restarted
-      become: yes
+        enabled: yes
+        daemon_reload: yes
+      when: nginx_config_status.rc == 0  
+#    - name: restart nginx
+#      service:
+#        name: nginx
+#        state: restarted
+#      become: yes
 
