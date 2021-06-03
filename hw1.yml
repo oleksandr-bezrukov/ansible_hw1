@@ -1,3 +1,16 @@
+- hosts: all
+  vars_files:
+    - ./external_vars.yml
+
+- hosts: ans-app
+  tasks:
+    - name: Install nodejs
+      apt:
+        name: ['npm=3.5.2-0ubuntu4']
+        state: present
+        update_cache: yes
+      become: yes
+
 - hosts: ans-nginx
   tasks:
     - name: Install nginx with dependencies
@@ -19,27 +32,29 @@
         src: nginx/fwd.conf
         dest: /etc/nginx/conf.d
       become: yes
-    - name: Create a directory if it does not exist
+      
+    - name: Create a directory for certificates if it does not exist
       file:
-        path: /var/www/html
+        path: {{path2cert}}
         state: directory
         mode: '0755'
-      become: yes
-      #    - name: create directory for html
-#      command:  mkdir -p /var/www/html
-#      become: yes
-    - name: copy the index.html
-      copy:
-        src: ./index.html
-        dest: /var/www/html
+      become: yes      
+    - name: check if certificate exists
+      stat:
+        path: "{{path2cert}}/certificate.pem"
+      register: nginx_cert
+    - name: create nginx cert if not exists
+      shell: "openssl req -x509 -newkey rsa:2048 -nodes -keyout {{path2cert}}/privkey.pem  -days 36500 -out {{path2cert}}/certificate.pem -subj '/C=US/ST=NRW/L=Earth/O=CompanyName/OU=IT/CN={{nginx_fqdn}}/emailAddress=email@example.com'"
+      when: not nginx_cert.stat.exists
       become: yes
       
     - name: Check NGINX configs
       shell: "/usr/sbin/nginx -t"
       register: nginx_config_status
-    - name: NGINX test status
-      debug:
-        msg: "{{ nginx_config_status }}"
+      become: yes
+#    - name: NGINX test status
+#      debug:
+#        msg: "{{ nginx_config_status }}"
     - name: NGINX test status
       debug:
         msg: "{{ nginx_config_status.rc }}"
@@ -49,10 +64,5 @@
         state: restarted
         enabled: yes
         daemon_reload: yes
-      when: nginx_config_status.rc == 0  
-#    - name: restart nginx
-#      service:
-#        name: nginx
-#        state: restarted
-#      become: yes
-
+      when: nginx_config_status.rc == 0
+      become: yes
