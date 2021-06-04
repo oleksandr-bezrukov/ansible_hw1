@@ -13,9 +13,10 @@
         mode: '0755'
       become: yes
     - name: create user node-red
+      become: yes
       user:
         name: node-red
         shell: /bin/bash
         groups: node-red
         append: yes
-        home: {{DATA}}
+        home: "{{DATA}}"
