@@ -17,4 +17,50 @@
         path: "{{DATA}}"
         state: directory
         mode: '0755'
-      become: yes 
+        owner: postgres
+        group: postgres
+      become: yes
+    - name: Check if db exists
+      stat:
+        path: "{{DATA}}/pg_hba.conf"
+      register: db_exists
+      become: yes
+    - name: show answer if exists
+      debug:
+        msg: "{{ db_exists.stat.exists }}"
+    - name: create db if not exists
+      shell: "/usr/lib/postgresql/10/bin/initdb -D {{DATA}}"
+      when: not db_exists.stat.exists
+      become: yes
+      become_user: postgres
+    - name: copy postgresql config file
+      copy:
+        src: ./postgresql.conf
+        dest: "{{/DATA}}/postgresql.conf"
+      become: yes
+      become_user: postgres
+
+    - name: copy postgresql config file
+      copy:
+        src: ./pg_hba.conf
+        dest: "{{/DATA}}/pg_hba.conf"
+      become: yes
+      become_user: postgres
+    - name: restart db
+      shell: "/usr/lib/postgresql/10/bin/pg_ctl -D {{DATA}} -l {{DATA}}/logfile start"
+      when: db_exists.stat.exists
+      become: yes
+      become_user: postgres
+ 
+    - name: create user
+        shell: "echo \"SELECT 'CREATE USER puser' WHERE NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'puser')\gexec\" | psql -p 8080"
+      when: not db_exists.rc.stat.exists
+      become: yes
+      become_user: postgres
+
+    - name: create user
+        shell: "echo \"ALTER USER puser WITH PASSWORD '5515515'\" | psql -p 8080"
+#        "echo \"ALTER USER puser WITH PASSWORD '5515515'\" | psql -p 8080\"" | psql -p 8080"
+      when: not db_exists.stat.exists
+      become: yes
+      become_user: postgres
