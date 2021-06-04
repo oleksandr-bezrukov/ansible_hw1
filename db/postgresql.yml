@@ -1,0 +1,14 @@
+- hosts: ans-app
+  tasks:
+    - name: Install postgres
+      apt:
+        name: ['postgresql=10+190ubuntu0.1']
+        state: present
+        update_cache: yes
+      become: yes
+    - name: Install postgresql-contrib
+      apt:
+        name: ['postgresql-contrib=10+190ubuntu0.1']
+        state: present
+        update_cache: yes
+      become: yes
