@@ -183,7 +183,7 @@
         "id": "b36084c7.c00f48",
         "type": "postgresdb",
         "cfgname": "pg",
-        "hostname": "172.31.28.46",
+        "hostname": "pg_host",
         "port": "8080",
         "db": "postgres",
         "ssl": false
