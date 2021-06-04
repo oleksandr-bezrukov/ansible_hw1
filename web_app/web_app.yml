@@ -27,30 +27,46 @@
     - name: Install node-red-contrib-re-postgres
       npm: name=node-red-contrib-re-postgres global=yes production=yes
       become: yes
+      
+    - name: Check init run
+      stat:
+        path: {{DATA}}/settings.js
+      register: not_init_run
+      become: yes
+    - name: show answer 
+      debug:
+        msg: "{{ not_init_run.rc }}"
+      
     - name: copy the web app config file
       copy:
         src: ./flows.json
-        dest: {{DATA}}/flows.json
+        dest: "{{DATA}}/flows.json"
       become: yes
       become_user: node-red
     - name: copy the web app config file
       copy:
         src: ./flows_cred.json
-        dest: {{DATA}}/flows_cred.json
+        dest: "{{DATA}}/flows_cred.json"
       become: yes
       become_user: node-red
     - name: copy the web app config file
       copy:
         src: ./settings.js
-        dest: {{DATA}}/settings.js
+        dest: "{{DATA}}/settings.js"
       become: yes
       become_user: node-red
     - name: set postgresql ip
       replace:
-        path: {{DATA}}/flows.json
+        path: "{{DATA}}/flows.json"
         regexp: '^(\s*"hostname":\s+")pg_host(",\s*)$'
         replace: '\1{{pg_host}}\2'
+    - name: init run
+      shell: "pm2 restart node-red -- --userDir {{DATA}} --port 8080"
+      when: not not_init_run.rc == 0
+      become: yes
+      become_user: postgres
+
     - name: run web application
-      shell: "pm2 restart node-red -- --userDir /data --port 8080"
+      shell: "pm2 restart node-red -- --userDir {{DATA}} --port 8080"
       become: yes
       become_user: node-red
