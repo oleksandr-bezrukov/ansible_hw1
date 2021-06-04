@@ -52,9 +52,9 @@
       become: yes
       become_user: postgres
     - name: create postgres user
-        become: yes
-        become_user: postgres
-        postgresql_user:
+      become: yes
+      become_user: postgres
+      postgresql_user:
           db: postgres
           name: puser
           password: 5515515
