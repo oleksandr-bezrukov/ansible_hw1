@@ -36,14 +36,14 @@
     - name: copy postgresql config file
       copy:
         src: ./postgresql.conf
-        dest: "{{/DATA}}/postgresql.conf"
+        dest: "{{DATA}}/postgresql.conf"
       become: yes
       become_user: postgres
 
     - name: copy postgresql config file
       copy:
         src: ./pg_hba.conf
-        dest: "{{/DATA}}/pg_hba.conf"
+        dest: "{{DATA}}/pg_hba.conf"
       become: yes
       become_user: postgres
     - name: restart db
