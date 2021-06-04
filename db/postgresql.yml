@@ -55,10 +55,19 @@
         become: yes
         become_user: postgres
         postgresql_user:
-          db: "postgres"
-          name: "puser"
-          password: "5515515"
-          priv: ALL:SELECT,INSERT,UPDATE,DELETE,CONNECT
+          db: postgres
+          name: puser
+          password: 5515515
+          priv: "ALL:SELECT,INSERT,UPDATE,DELETE,CONNECT"
+          expires: infinity 
+#          
+#- name: Connect to acme database and set user's password with no expire date
+#  community.postgresql.postgresql_user:
+#    db: acme
+#    name: django
+#    password: mysupersecretword
+#    priv: "CONNECT/products:ALL"
+#    expires: infinity          
 #
 #    - name: create user
 #        shell: "echo \"SELECT 'CREATE USER puser WHERE NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'puser')\gexec\" | psql -p 8080"
