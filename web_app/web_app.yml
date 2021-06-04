@@ -60,6 +60,8 @@
         path: "{{DATA}}/flows.json"
         regexp: '^(\s*"hostname":\s+")pg_host(",\s*)$'
         replace: '\1{{pg_host}}\2'
+      become: yes
+      become_user: node-red
     - name: init run
       shell: "pm2 restart node-red -- --userDir {{DATA}} --port 8080"
       when: not not_init_run.stat.exists 
