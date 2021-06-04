@@ -30,7 +30,7 @@
       
     - name: Check init run
       stat:
-        path: {{DATA}}/settings.js
+        path: "{{DATA}}/settings.js"
       register: not_init_run
       become: yes
     - name: show answer 
