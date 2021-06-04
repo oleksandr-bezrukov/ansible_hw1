@@ -6,9 +6,16 @@
         state: present
         update_cache: yes
       become: yes
-    - name: Create a directory for database
+    - name: Create a directory for web app
       file:
         path: "{{DATA}}"
         state: directory
         mode: '0755'
-      become: yes 
+      become: yes
+    - name: create user node-red
+      user:
+        name: node-red
+        shell: /bin/bash
+        groups: node-red
+        append: yes
+        home: {{DATA}}
