@@ -52,16 +52,25 @@
       become: yes
       become_user: postgres
  
-    - name: create user
-        shell: "echo \"SELECT 'CREATE USER puser' WHERE NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'puser')\gexec\" | psql -p 8080"
+#    - name: create user
+#        shell: "echo \"SELECT 'CREATE USER puser WHERE NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'puser')\gexec\" | psql -p 8080"
  #       echo \"SELECT 'CREATE USER puser WHERE NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'puser')\gexec\" | psql -p 8080"
-      when: not db_exists.rc.stat.exists
-      become: yes
-      become_user: postgres
-
-    - name: create user
-        shell: "echo \"ALTER USER puser WITH PASSWORD '5515515'\" | psql -p 8080"
+#      when: not db_exists.rc.stat.exists
+#      become: yes
+#      become_user: postgres
+#
+#    - name: create user
+#        shell: "echo \"ALTER USER puser WITH PASSWORD '5515515'\" | psql -p 8080"
 #        "echo \"ALTER USER puser WITH PASSWORD '5515515'\" | psql -p 8080\"" | psql -p 8080"
-      when: not db_exists.stat.exists
-      become: yes
-      become_user: postgres
+#      when: not db_exists.stat.exists
+#      become: yes
+#      become_user: postgres
+
+- name: Create postgres user for my app
+       become: yes
+       become_user: postgres
+       postgresql_user:
+         db: "postgres"
+         name: "puser"
+         password: "5515515"
+         priv: ALL:SELECT,INSERT,UPDATE,DELETE,CONNECT
