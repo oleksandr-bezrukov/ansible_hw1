@@ -1,3 +1,5 @@
+- name: install/configure postgresql
+  import_playbook: db/postgresql.yml
 - name: install/configure web_app
   import_playbook: web_app/web_app.yml
 - name: install/configure nginx
