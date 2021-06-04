@@ -66,11 +66,11 @@
 #      become: yes
 #      become_user: postgres
 
-- name: Create postgres user for my app
-       become: yes
-       become_user: postgres
-       postgresql_user:
-         db: "postgres"
-         name: "puser"
-         password: "5515515"
-         priv: ALL:SELECT,INSERT,UPDATE,DELETE,CONNECT
+    - name: Create postgres user for my app
+        become: yes
+        become_user: postgres
+        postgresql_user:
+          db: "postgres"
+          name: "puser"
+          password: "5515515"
+          priv: ALL:SELECT,INSERT,UPDATE,DELETE,CONNECT
