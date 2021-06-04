@@ -6,12 +6,12 @@
         state: present
         update_cache: yes
       become: yes
-    - name: Create a directory for web app
-      file:
-        path: "{{DATA}}"
-        state: directory
-        mode: '0755'
-      become: yes
+#    - name: Create a directory for web app
+#      file:
+#        path: "{{DATA}}"
+#        state: directory
+#        mode: '0755'
+#      become: yes
     - name: create user node-red
       become: yes
       user:
@@ -27,6 +27,29 @@
     - name: Install node-red-contrib-re-postgres
       npm: name=node-red-contrib-re-postgres global=yes production=yes
       become: yes
+    - name: copy the web app config file
+      copy:
+        src: ./flows.json
+        dest: {{DATA}}/flows.json
+      become: yes
+      become_user: node-red
+    - name: copy the web app config file
+      copy:
+        src: ./flows_cred.json
+        dest: {{DATA}}/flows_cred.json
+      become: yes
+      become_user: node-red
+    - name: copy the web app config file
+      copy:
+        src: ./settings.js
+        dest: {{DATA}}/settings.js
+      become: yes
+      become_user: node-red
+    - name: set postgresql ip
+      replace:
+        path: {{DATA}}/flows.json
+        regexp: '^(\s*"hostname":\s+")pg_host(",\s*)$'
+        replace: '\1{{pg_host}}\2'
     - name: run web application
       shell: "pm2 restart node-red -- --userDir /data --port 8080"
       become: yes
