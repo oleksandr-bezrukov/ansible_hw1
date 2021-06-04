@@ -24,3 +24,4 @@
       npm: name=node-red global=yes production=yes
     - name: Install node-red-contrib-re-postgres
       npm: name=node-red-contrib-re-postgres global=yes production=yes
+      become: yes
