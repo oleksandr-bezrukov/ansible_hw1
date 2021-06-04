@@ -18,3 +18,9 @@
         name: node-red
         shell: /bin/bash
         home: "{{DATA}}"
+    - name: Install pm2
+      npm: name=pm2 global=yes production=yes
+    - name: Install node-red
+      npm: name=node-red global=yes production=yes
+    - name: Install node-red-contrib-re-postgres
+      npm: name=node-red-contrib-re-postgres global=yes production=yes
