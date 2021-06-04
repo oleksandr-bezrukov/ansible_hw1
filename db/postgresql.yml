@@ -54,6 +54,7 @@
  
     - name: create user
         shell: "echo \"SELECT 'CREATE USER puser' WHERE NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'puser')\gexec\" | psql -p 8080"
+ #       echo \"SELECT 'CREATE USER puser WHERE NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'puser')\gexec\" | psql -p 8080"
       when: not db_exists.rc.stat.exists
       become: yes
       become_user: postgres
