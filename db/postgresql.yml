@@ -59,6 +59,7 @@
           name: puser
           password: "5515515"
           role_attr_flags: CREATEDB,SUPERUSER,CREATEROLE,INHERIT,LOGIN
+          port: 8080
 #          priv: "ALL:SELECT,INSERT,UPDATE,DELETE,CONNECT"
 #          expires: infinity 
 #          
