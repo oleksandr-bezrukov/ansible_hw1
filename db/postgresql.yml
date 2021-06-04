@@ -1,4 +1,4 @@
-- hosts: ans-app
+- hosts: ans-pg
   tasks:
     - name: Install postgres
       apt:
@@ -12,3 +12,9 @@
         state: present
         update_cache: yes
       become: yes
+    - name: Create a directory for database
+      file:
+        path: "{{DATA}}"
+        state: directory
+        mode: '0755'
+      become: yes 
