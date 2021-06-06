@@ -37,7 +37,7 @@
       become: yes
     - name: Check if db exists
       stat:
-        path: "{{DATA}}/pg_hba.conf"
+        path: "{{DATA}}/PG_VERSION"
       register: db_exists
       become: yes
     - name: show answer if exists
@@ -54,16 +54,21 @@
         dest: "{{DATA}}/postgresql.conf"
       become: yes
       become_user: postgres
-
+      when: not db_exists.stat.exists
     - name: copy postgresql config file
       copy:
         src: ./pg_hba.conf
         dest: "{{DATA}}/pg_hba.conf"
       become: yes
       become_user: postgres
+      when: not db_exists.stat.exists
+    - name: start db
+      shell: "/usr/lib/postgresql/10/bin/pg_ctl -D {{DATA}} -l {{DATA}}/logfile start"
+      when: db_exists.stat.exists
+      become: yes
+      become_user: postgres
     - name: restart db
       shell: "/usr/lib/postgresql/10/bin/pg_ctl -D {{DATA}} -l {{DATA}}/logfile restart"
-      when: db_exists.stat.exists
       become: yes
       become_user: postgres
     - name: check db connection
