@@ -12,6 +12,15 @@
         state: present
         update_cache: yes
       become: yes
+    - name: Install pip
+      apt:
+        name: ['python-pip=9.0.1-2.3~ubuntu1.18.04.4']
+        state: present
+        update_cache: yes
+      become: yes
+    - name: Install postgresql-contrib
+      pip:
+        name: psycopg2==2.8.6
     - name: Create a directory for database
       file:
         path: "{{DATA}}"
