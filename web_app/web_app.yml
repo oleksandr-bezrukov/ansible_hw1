@@ -62,7 +62,6 @@
     - name: set credential secret
       replace:
         path: "{{DATA}}/settings.js"
-            credentialSecret: "a-secret-key",
         regexp: '^\s*credentialSecret:\s*".+",\s*$'
         replace: '    credentialSecret: "{{encrypted_supersecretkey}}",'
       become: yes
