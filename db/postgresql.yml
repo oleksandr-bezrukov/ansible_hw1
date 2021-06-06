@@ -72,6 +72,9 @@
       become: yes
       become_user: postgres
       register: db_ready
+    - name: show answer 
+      debug:
+        msg: "{{ db_ready }}"
     - name: create postgres user
       become: yes
       become_user: postgres
