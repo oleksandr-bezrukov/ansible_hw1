@@ -12,6 +12,12 @@
         state: present
         update_cache: yes
       become: yes
+    - name: Install postgresql-server-dev-10
+      apt:
+        name: ['postgresql-server-dev-10=10.17-0ubuntu0.18.04.1']
+        state: present
+        update_cache: yes
+      become: yes      
     - name: Install pip
       apt:
         name: ['python-pip=9.0.1-2.3~ubuntu1.18.04.4']
