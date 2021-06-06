@@ -59,7 +59,7 @@
       replace:
         path: "{{DATA}}/flows.json"
         regexp: '^\s*"hostname":\s*"pg_host",\s*$'
-        replace: '^        "hostname": "{{pg_host}}",$'
+        replace: '        "hostname": "{{pg_host}}",'
       become: yes
       become_user: node-red
     - name: init run
