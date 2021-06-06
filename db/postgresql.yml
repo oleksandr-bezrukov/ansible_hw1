@@ -27,6 +27,7 @@
     - name: Install postgresql-contrib
       pip:
         name: psycopg2==2.8.6
+      become: yes
     - name: Create a directory for database
       file:
         path: "{{DATA}}"
