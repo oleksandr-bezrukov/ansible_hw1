@@ -42,7 +42,7 @@
       become: yes
     - name: show answer if exists
       debug:
-        msg: "{{ db_exists.rc }}"
+        msg: "{{ db_exists.stat.exists }}"
     - name: create db if not exists
       shell: "/usr/lib/postgresql/10/bin/initdb -D {{DATA}}"
       when: not db_exists.stat.exists
