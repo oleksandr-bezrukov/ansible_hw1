@@ -81,13 +81,16 @@
     - name: show answer 
       debug:
         msg: "{{ db_ready }}"
+    - name: load pg password
+      include_vars:
+        file: encrypted_pg_password.yml
     - name: create postgres user
       become: yes
       become_user: postgres
       postgresql_user:
 #          db: postgres
           name: puser
-          password: "5515515"
+          password: "{{encrypted_pg_password}}"
           role_attr_flags: CREATEDB,SUPERUSER,CREATEROLE,INHERIT,LOGIN
           port: 8080
       when: db_ready.rc == 0
