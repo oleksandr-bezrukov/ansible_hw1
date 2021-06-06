@@ -36,7 +36,7 @@
       become: yes
     - name: show answer if exists
       debug:
-        msg: "{{ db_exists.stat.exists }}"
+        msg: "{{ db_exists.rc }}"
     - name: create db if not exists
       shell: "/usr/lib/postgresql/10/bin/initdb -D {{DATA}}"
       when: not db_exists.stat.exists
@@ -60,6 +60,12 @@
       when: db_exists.stat.exists
       become: yes
       become_user: postgres
+    - name: check db connection
+      shell: "pg_isready -p 8080"
+      when: db_exists.stat.exists
+      become: yes
+      become_user: postgres
+      register: db_ready
     - name: create postgres user
       become: yes
       become_user: postgres
@@ -69,6 +75,7 @@
           password: "5515515"
           role_attr_flags: CREATEDB,SUPERUSER,CREATEROLE,INHERIT,LOGIN
           port: 8080
+      when: db_ready.rc == 0
 #          priv: "ALL:SELECT,INSERT,UPDATE,DELETE,CONNECT"
 #          expires: infinity 
 #          
