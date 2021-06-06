@@ -6,12 +6,6 @@
         state: present
         update_cache: yes
       become: yes
-#    - name: Create a directory for web app
-#      file:
-#        path: "{{DATA}}"
-#        state: directory
-#        mode: '0755'
-#      become: yes
     - name: create user node-red
       become: yes
       user:
@@ -43,6 +37,13 @@
         dest: "{{DATA}}/flows.json"
       become: yes
       become_user: node-red
+    - name: set postgresql ip
+      replace:
+        path: "{{DATA}}/flows.json"
+        regexp: '^\s*"hostname":\s*"pg_host",\s*$'
+        replace: '        "hostname": "{{pg_host}}",'
+      become: yes
+      become_user: node-red
     - name: copy the web app config file
       copy:
         src: ./flows_cred.json
@@ -55,13 +56,18 @@
         dest: "{{DATA}}/settings.js"
       become: yes
       become_user: node-red
-    - name: set postgresql ip
+    - name: load credential secret
+      include_vars:
+        file: encrypted_supersecretkey.yml
+    - name: set credential secret
       replace:
-        path: "{{DATA}}/flows.json"
-        regexp: '^\s*"hostname":\s*"pg_host",\s*$'
-        replace: '        "hostname": "{{pg_host}}",'
+        path: "{{DATA}}/settings.js"
+            credentialSecret: "a-secret-key",
+        regexp: '^\s*credentialSecret:\s*".+",\s*$'
+        replace: '    credentialSecret: "{{encrypted_supersecretkey}}",'
       become: yes
       become_user: node-red
+
     - name: init run
       shell: "pm2 start node-red -- --userDir {{DATA}} --port 8080"
       when: not not_init_run.stat.exists 
