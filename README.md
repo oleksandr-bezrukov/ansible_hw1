@@ -22,8 +22,8 @@
  #### 1. python2.7 is installed on the all servers:
  ##### **sudo apt update && sudo apt install python2.7 mc nano net-tools wget curl -y**
  #### 2. Ansible is installed on the management-server:
- ##### **sudo apt update && sudo apt install software-properties-common && \ **
- ##### **sudo apt-add-repository ppa:ansible/ansible && sudo apt install ansible **
+ ##### **sudo apt update && sudo apt install software-properties-common && \**
+ ##### **sudo apt-add-repository ppa:ansible/ansible && sudo apt install ansible**
  #### 3. All servers have user with sudo
  #### 4. On the management-server path to the private ssh-key was set in  /etc/ansible/ansible.cfg: 
  ##### private_key_file = path-to-private-key 
