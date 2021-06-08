@@ -46,7 +46,7 @@
     - name: set postgresql ip
       replace:
         path: "{{DATA}}/flows.json"
-        regexp: '^\s*"hostname":\s*"pg_host",\s*$'
+        regexp: '^\s*"hostname":\s*"\d+\.\d+\.\d+\.\d+",\s*$'
         replace: '        "hostname": "{{hostvars.web_app.ansible_host}}",'
       become: yes
       become_user: node-red
