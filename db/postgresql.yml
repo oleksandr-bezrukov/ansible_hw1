@@ -1,4 +1,4 @@
-- hosts: ans-pg
+- hosts: postgresql
   tasks:
     - name: Install postgres
       apt:
@@ -6,28 +6,33 @@
         state: present
         update_cache: yes
       become: yes
+      
     - name: Install postgresql-contrib
       apt:
         name: ['postgresql-contrib=10+190ubuntu0.1']
         state: present
         update_cache: yes
       become: yes
+      
     - name: Install postgresql-server-dev-10
       apt:
         name: ['postgresql-server-dev-10=10.17-0ubuntu0.18.04.1']
         state: present
         update_cache: yes
-      become: yes      
+      become: yes
+      
     - name: Install pip
       apt:
         name: ['python-pip=9.0.1-2.3~ubuntu1.18.04.4']
         state: present
         update_cache: yes
       become: yes
+      
     - name: Install postgresql-contrib
       pip:
         name: psycopg2==2.8.6
       become: yes
+      
     - name: Create a directory for database
       file:
         path: "{{DATA}}"
@@ -36,19 +41,23 @@
         owner: postgres
         group: postgres
       become: yes
+      
     - name: Check if db exists
       stat:
         path: "{{DATA}}/PG_VERSION"
       register: db_exists
       become: yes
-    - name: show answer if exists
-      debug:
-        msg: "{{ db_exists.stat.exists }}"
+      
+#    - name: show answer if exists
+#      debug:
+#        msg: "{{ db_exists.stat.exists }}"
+
     - name: create db if not exists
       shell: "/usr/lib/postgresql/10/bin/initdb -D {{DATA}}"
       when: not db_exists.stat.exists
       become: yes
       become_user: postgres
+      
     - name: copy postgresql config file
       copy:
         src: ./postgresql.conf
@@ -56,6 +65,7 @@
       become: yes
       become_user: postgres
       when: not db_exists.stat.exists
+      
     - name: copy postgresql config file
       copy:
         src: ./pg_hba.conf
@@ -63,67 +73,39 @@
       become: yes
       become_user: postgres
       when: not db_exists.stat.exists
+      
     - name: start db
       shell: "/usr/lib/postgresql/10/bin/pg_ctl -D {{DATA}} -l {{DATA}}/logfile start"
       when: not db_exists.stat.exists
       become: yes
       become_user: postgres
+      
     - name: restart db
       shell: "/usr/lib/postgresql/10/bin/pg_ctl -D {{DATA}} -l {{DATA}}/logfile restart"
       become: yes
       become_user: postgres
       when: db_exists.stat.exists
+      
     - name: check db connection
       shell: "pg_isready -p 8080"
       become: yes
       become_user: postgres
       register: db_ready
-    - name: show answer 
-      debug:
-        msg: "{{ db_ready }}"
+      
+#    - name: show answer 
+#      debug:
+#        msg: "{{ db_ready }}"
+
     - name: load pg password
       include_vars:
         file: encrypted_pg_password.yml
+        
     - name: create postgres user
       become: yes
       become_user: postgres
       postgresql_user:
-#          db: postgres
           name: puser
           password: "{{encrypted_pg_password}}"
           role_attr_flags: CREATEDB,SUPERUSER,CREATEROLE,INHERIT,LOGIN
           port: 8080
       when: db_ready.rc == 0
-#          priv: "ALL:SELECT,INSERT,UPDATE,DELETE,CONNECT"
-#          expires: infinity 
-#          
-#- name: Connect to acme database and set user's password with no expire date
-#  community.postgresql.postgresql_user:
-#    db: acme
-#    name: django
-#    password: mysupersecretword
-#    priv: "CONNECT/products:ALL"
-#    expires: infinity          
-#
-#    - name: create user
-#        shell: "echo \"SELECT 'CREATE USER puser WHERE NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'puser')\gexec\" | psql -p 8080"
- #       echo \"SELECT 'CREATE USER puser WHERE NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'puser')\gexec\" | psql -p 8080"
-#      when: not db_exists.rc.stat.exists
-#      become: yes
-#      become_user: postgres
-#
-#    - name: create user
-#        shell: "echo \"ALTER USER puser WITH PASSWORD '5515515'\" | psql -p 8080"
-#        "echo \"ALTER USER puser WITH PASSWORD '5515515'\" | psql -p 8080\"" | psql -p 8080"
-#      when: not db_exists.stat.exists
-#      become: yes
-#      become_user: postgres
-#
-#    - name: Create postgres user for my app
-#        become: yes
-#        become_user: postgres
-#        postgresql_user:
-#          db: "postgres"
-#          name: "puser"
-#          password: "5515515"
-#          priv: ALL:SELECT,INSERT,UPDATE,DELETE,CONNECT
