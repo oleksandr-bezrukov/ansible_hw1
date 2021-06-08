@@ -30,7 +30,7 @@
       replace:
         path: /etc/nginx/conf.d/fwd.conf
         regexp: '^(\s*proxy_pass\s+)http://web_app_host(:8080/query;\s*)$'
-        replace: '\1 http://{{web_app_host}}\2'
+        replace: '\1 http://{{hostvars.web_app.ansible_host}}\2'
         backup: yes
       become: yes
       
