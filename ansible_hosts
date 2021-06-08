@@ -6,3 +6,8 @@ ans-pg ansible_host=3.138.182.99
 
 [all:vars]
 ansible_python_interpreter=/usr/bin/python2.7
+nginx_fqdn: ec2-18-221-116-221.us-east-2.compute.amazonaws.com
+pg_host: 127.0.0.1
+web_app_host: 127.127.127.127
+DATA: /data
+path2cert: /etc/nginx/certs
