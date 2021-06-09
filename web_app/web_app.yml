@@ -7,6 +7,13 @@
         update_cache: yes
       become: yes
       
+    - name: Install postgres client
+      apt:
+        name: ['postgresql-client-10=10.17-0ubuntu0.18.04.1']
+        state: present
+        update_cache: yes
+      become: yes
+      
     - name: create user node-red
       become: yes
       user:
@@ -76,6 +83,15 @@
         replace: '    credentialSecret: "{{encrypted_supersecretkey}}",'
       become: yes
       become_user: node-red
+      
+    - name: load pg password
+      include_vars:
+        file: ../DB/encrypted_pg_password.yml
+      
+    - name: Check postgresql connection
+      shell: "psql \"postgresql://puser:{{encrypted_pg_password}}@{{hostvars.postgresql.ansible_host}}:8080/postgres\" -q -c \"\\l\""
+      register: postgresql_connection
+      become: yes
 
     - name: init run
       shell: "pm2 start node-red -- --userDir {{DATA}} --port 8080"
